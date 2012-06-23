@@ -328,9 +328,9 @@ ns_init_paths (void)
               {
                 if ([resourcePaths length] > 0)
                   resourcePaths
-                    = [resourcePaths stringByAppendingString: pathSeparator];
+		    = [resourcePaths stringByAppendingString: pathSeparator];
                 resourcePaths
-                  = [resourcePaths stringByAppendingString: resourcePath];
+		  = [resourcePaths stringByAppendingString: resourcePath];
               }
         }
       if ([resourcePaths length] > 0)
@@ -338,11 +338,18 @@ ns_init_paths (void)
 /*NSLog (@"loadPath: '%@'\n", resourcePaths); */
     }
 
+  /* Normally, Emacs does not add its own bin/ directory to the PATH.
+     However, a self-contained NS build has a different layout, with
+     bin/ and libexec/ subdirectories in the directory that contains
+     Emacs.app itself.
+     We put libexec first, because init_callproc_1 uses the first
+     element to initialize exec-directory.  An alternative would be
+     for init_callproc to check for invocation-directory/libexec.  */
   if (!getenv ("EMACSPATH"))
     {
       NSArray *paths = [binDir stringsByAppendingPaths:
-                                  [NSArray arrayWithObjects: @"bin",
-                                                             @"lib-exec", nil]];
+                                  [NSArray arrayWithObjects: @"libexec",
+                                                             @"bin", nil]];
       NSEnumerator *pathEnum = [paths objectEnumerator];
       resourcePaths = @"";
       while (resourcePath = [pathEnum nextObject])
@@ -352,9 +359,9 @@ ns_init_paths (void)
               {
                 if ([resourcePaths length] > 0)
                   resourcePaths
-                    = [resourcePaths stringByAppendingString: pathSeparator];
+		    = [resourcePaths stringByAppendingString: pathSeparator];
                 resourcePaths
-                  = [resourcePaths stringByAppendingString: resourcePath];
+		  = [resourcePaths stringByAppendingString: resourcePath];
               }
         }
       if ([resourcePaths length] > 0)
@@ -371,16 +378,6 @@ ns_init_paths (void)
           if (!getenv ("EMACSDOC"))
             setenv ("EMACSDOC", [resourcePath UTF8String], 1);
         }
-    }
-
-  if (!getenv ("INFOPATH"))
-    {
-      resourcePath = [resourceDir stringByAppendingPathComponent: @"info"];
-      if ([fileManager fileExistsAtPath: resourcePath isDirectory: &isDir])
-        if (isDir)
-          setenv ("INFOPATH", [[resourcePath stringByAppendingString: @":"]
-                                             UTF8String], 1);
-      /* Note, extra colon needed to cause merge w/later user additions. */
     }
 }
 
@@ -439,9 +436,9 @@ ns_timeout (int usecs)
       EMACS_GET_TIME (timeout);
 
       /* In effect, timeout = wakeup - timeout.
-         Break if result would be negative.  */
+	 Break if result would be negative.  */
       if (timeval_subtract (&timeout, wakeup, timeout))
-        break;
+	break;
 
       /* Try to wait that long--but we might wake up sooner.  */
       select (0, NULL, NULL, NULL, &timeout);
@@ -696,12 +693,12 @@ ns_update_window_end (struct window *w, int cursor_on_p,
       BLOCK_INPUT;
 
       if (cursor_on_p)
-        display_and_set_cursor (w, 1,
+	display_and_set_cursor (w, 1,
                                 output_cursor.hpos, output_cursor.vpos,
-                                output_cursor.x, output_cursor.y);
+				output_cursor.x, output_cursor.y);
 
       if (draw_window_fringes (w, 1))
-        x_draw_vertical_border (w);
+	x_draw_vertical_border (w);
 
       UNBLOCK_INPUT;
     }
@@ -1034,7 +1031,7 @@ ns_frame_rehighlight (struct frame *frame)
   if (dpyinfo->x_focus_frame)
     {
       dpyinfo->x_highlight_frame
-        = (FRAMEP (FRAME_FOCUS_FRAME (dpyinfo->x_focus_frame))
+	= (FRAMEP (FRAME_FOCUS_FRAME (dpyinfo->x_focus_frame))
            ? XFRAME (FRAME_FOCUS_FRAME (dpyinfo->x_focus_frame))
            : dpyinfo->x_focus_frame);
       if (!FRAME_LIVE_P (dpyinfo->x_highlight_frame))
@@ -1050,15 +1047,15 @@ ns_frame_rehighlight (struct frame *frame)
          dpyinfo->x_highlight_frame != old_highlight)
     {
       if (old_highlight)
-        {
+	{
           x_update_cursor (old_highlight, 1);
-          x_set_frame_alpha (old_highlight);
-        }
+	  x_set_frame_alpha (old_highlight);
+	}
       if (dpyinfo->x_highlight_frame)
-        {
+	{
           x_update_cursor (dpyinfo->x_highlight_frame, 1);
           x_set_frame_alpha (dpyinfo->x_highlight_frame);
-        }
+	}
     }
 }
 
@@ -1206,7 +1203,7 @@ x_set_offset (struct frame *f, int xoff, int yoff, int change_grav)
         ? [screen visibleFrame].size.width + f->left_pos - FRAME_PIXEL_WIDTH (f)
         : f->left_pos;
       /* We use visibleFrame here to take menu bar into account.
-         Ideally we should also adjust left/top with visibleFrame.origin.  */
+	 Ideally we should also adjust left/top with visibleFrame.origin.  */
 
       f->top_pos = f->size_hint_flags & YNegative
         ? ([screen visibleFrame].size.height + f->top_pos
@@ -1363,7 +1360,7 @@ ns_index_color (NSColor *color, struct frame *f)
       color_table->size = NS_COLOR_CAPACITY;
       color_table->avail = 1; /* skip idx=0 as marker */
       color_table->colors
-        = (NSColor **)xmalloc (color_table->size * sizeof (NSColor *));
+	= (NSColor **)xmalloc (color_table->size * sizeof (NSColor *));
       color_table->colors[0] = nil;
       color_table->empty_indices = [[NSMutableSet alloc] init];
     }
@@ -1382,9 +1379,9 @@ ns_index_color (NSColor *color, struct frame *f)
   else
     {
       if (color_table->avail == color_table->size)
-        color_table->colors =
-          xpalloc (color_table->colors, &color_table->size, 1,
-                   min (ULONG_MAX, PTRDIFF_MAX), sizeof *color_table->colors);
+	color_table->colors =
+	  xpalloc (color_table->colors, &color_table->size, 1,
+		   min (ULONG_MAX, PTRDIFF_MAX), sizeof *color_table->colors);
       idx = color_table->avail++;
     }
 
@@ -1588,7 +1585,7 @@ ns_color_to_lisp (NSColor *col)
       [[col colorUsingColorSpaceName: NSCalibratedWhiteColorSpace]
             getWhite: &gray alpha: &alpha];
       snprintf (buf, sizeof (buf), "#%2.2lx%2.2lx%2.2lx",
-                lrint (gray * 0xff), lrint (gray * 0xff), lrint (gray * 0xff));
+		lrint (gray * 0xff), lrint (gray * 0xff), lrint (gray * 0xff));
       UNBLOCK_INPUT;
       return build_string (buf);
     }
@@ -1619,7 +1616,7 @@ ns_query_color(void *col, XColor *color_def, int setPixel)
   if (setPixel == YES)
     color_def->pixel
       = ARGB_TO_ULONG((int)(a*255),
-                      (int)(r*255), (int)(g*255), (int)(b*255));
+		      (int)(r*255), (int)(g*255), (int)(b*255));
 }
 
 
@@ -1882,13 +1879,13 @@ ns_frame_up_to_date (struct frame *f)
       /*&& hlinfo->mouse_face_mouse_frame*/)
         {
           BLOCK_INPUT;
-          ns_update_begin(f);
+	  ns_update_begin(f);
           if (hlinfo->mouse_face_mouse_frame)
             note_mouse_highlight (hlinfo->mouse_face_mouse_frame,
                                   hlinfo->mouse_face_mouse_x,
                                   hlinfo->mouse_face_mouse_y);
           hlinfo->mouse_face_deferred_gc = 0;
-          ns_update_end(f);
+	  ns_update_end(f);
           UNBLOCK_INPUT;
         }
     }
@@ -2097,20 +2094,20 @@ ns_scroll_run (struct window *w, struct run *run)
   if (to_y < from_y)
     {
       /* Scrolling up.  Make sure we don't copy part of the mode
-         line at the bottom.  */
+	 line at the bottom.  */
       if (from_y + run->height > bottom_y)
-        height = bottom_y - from_y;
+	height = bottom_y - from_y;
       else
-        height = run->height;
+	height = run->height;
     }
   else
     {
       /* Scrolling down.  Make sure we don't copy over the mode line.
-         at the bottom.  */
+	 at the bottom.  */
       if (to_y + run->height > bottom_y)
-        height = bottom_y - to_y;
+	height = bottom_y - to_y;
       else
-        height = run->height;
+	height = run->height;
     }
   /* end copy from other terms */
 
@@ -2159,17 +2156,17 @@ ns_after_update_window_line (struct glyph_row *desired_row)
      Under NS this is drawn inside the fringes. */
   if (windows_or_buffers_changed
       && (f = XFRAME (w->frame),
-          width = FRAME_INTERNAL_BORDER_WIDTH (f),
-          width != 0)
+	  width = FRAME_INTERNAL_BORDER_WIDTH (f),
+	  width != 0)
       && (height = desired_row->visible_height,
-          height > 0))
+	  height > 0))
     {
       int y = WINDOW_TO_FRAME_PIXEL_Y (w, max (0, desired_row->y));
 
       /* Internal border is drawn below the tool bar.  */
       if (WINDOWP (f->tool_bar_window)
-          && w == XWINDOW (f->tool_bar_window))
-        y -= width;
+	  && w == XWINDOW (f->tool_bar_window))
+	y -= width;
       /* end copy from other terms */
 
       BLOCK_INPUT;
@@ -2236,8 +2233,8 @@ ns_compute_glyph_string_overhangs (struct glyph_string *s)
       font->driver->text_extents (font, codes, 2, &metrics);
       s->left_overhang = -metrics.lbearing;
       s->right_overhang
-        = metrics.rbearing > metrics.width
-        ? metrics.rbearing - metrics.width : 0;
+	= metrics.rbearing > metrics.width
+	? metrics.rbearing - metrics.width : 0;
     }
   else
     {
@@ -2285,7 +2282,7 @@ ns_draw_fringe_bitmap (struct window *w, struct glyph_row *row,
   if (nBimgs < max_used_fringe_bitmap)
     {
       EmacsImage **newBimgs
-        = xmalloc (max_used_fringe_bitmap * sizeof (EmacsImage *));
+	= xmalloc (max_used_fringe_bitmap * sizeof (EmacsImage *));
       memset (newBimgs, 0, max_used_fringe_bitmap * sizeof (EmacsImage *));
 
       if (nBimgs)
@@ -2407,7 +2404,7 @@ ns_draw_window_cursor (struct window *w, struct glyph_row *glyph_row,
   if (cursor_type == BAR_CURSOR)
     {
       if (cursor_width < 1)
-        cursor_width = max (FRAME_CURSOR_WIDTH (f), 1);
+	cursor_width = max (FRAME_CURSOR_WIDTH (f), 1);
       w->phys_cursor_width = cursor_width;
     }
   /* If we have an HBAR, "cursor_width" MAY specify height. */
@@ -2449,8 +2446,8 @@ ns_draw_window_cursor (struct window *w, struct glyph_row *glyph_row,
   /* TODO: This makes drawing of cursor plus that of phys_cursor_glyph
            atomic.  Cleaner ways of doing this should be investigated.
            One way would be to set a global variable DRAWING_CURSOR
-           when making the call to draw_phys..(), don't focus in that
-           case, then move the ns_unfocus() here after that call. */
+  	   when making the call to draw_phys..(), don't focus in that
+  	   case, then move the ns_unfocus() here after that call. */
   NSDisableScreenUpdates ();
 #endif
 
@@ -2755,8 +2752,8 @@ ns_draw_relief (NSRect r, int thickness, char raised_p,
       newBaseCol = ns_lookup_indexed_color (s->face->box_color, s->f);
     }
 /*     else if (s->first_glyph->type == IMAGE_GLYPH
-           && s->img->pixmap
-           && !IMAGE_BACKGROUND_TRANSPARENT (s->img, s->f, 0))
+	   && s->img->pixmap
+   	   && !IMAGE_BACKGROUND_TRANSPARENT (s->img, s->f, 0))
        {
          newBaseCol = IMAGE_BACKGROUND  (s->img, s->f, 0);
        } */
@@ -2836,20 +2833,20 @@ ns_dumpglyphs_box_or_relief (struct glyph_string *s)
   NSTRACE (ns_dumpglyphs_box_or_relief);
 
   last_x = ((s->row->full_width_p && !s->w->pseudo_window_p)
-            ? WINDOW_RIGHT_EDGE_X (s->w)
-            : window_box_right (s->w, s->area));
+	    ? WINDOW_RIGHT_EDGE_X (s->w)
+	    : window_box_right (s->w, s->area));
   last_glyph = (s->cmp || s->img
                 ? s->first_glyph : s->first_glyph + s->nchars-1);
 
   right_x = ((s->row->full_width_p && s->extends_to_end_of_line_p
-              ? last_x - 1 : min (last_x, s->x + s->background_width) - 1));
+	      ? last_x - 1 : min (last_x, s->x + s->background_width) - 1));
 
   left_p = (s->first_glyph->left_box_line_p
-            || (s->hl == DRAW_MOUSE_FACE
-                && (s->prev == NULL || s->prev->hl != s->hl)));
+	    || (s->hl == DRAW_MOUSE_FACE
+		&& (s->prev == NULL || s->prev->hl != s->hl)));
   right_p = (last_glyph->right_box_line_p
-             || (s->hl == DRAW_MOUSE_FACE
-                 && (s->next == NULL || s->next->hl != s->hl)));
+	     || (s->hl == DRAW_MOUSE_FACE
+		 && (s->next == NULL || s->next->hl != s->hl)));
 
   r = NSMakeRect (s->x, s->y, right_x - s->x + 1, s->height);
 
@@ -2887,12 +2884,12 @@ ns_maybe_dumpglyphs_background (struct glyph_string *s, char force_p)
       int box_line_width = max (s->face->box_line_width, 0);
       if (FONT_HEIGHT (s->font) < s->height - 2 * box_line_width
           || s->font_not_found_p || s->extends_to_end_of_line_p || force_p)
-        {
+	{
           struct face *face;
           if (s->hl == DRAW_MOUSE_FACE)
             {
               face = FACE_FROM_ID (s->f,
-                                   MOUSE_HL_INFO (s->f)->mouse_face_face_id);
+				   MOUSE_HL_INFO (s->f)->mouse_face_face_id);
               if (!face)
                 face = FACE_FROM_ID (s->f, MOUSE_FACE_ID);
             }
@@ -2936,8 +2933,8 @@ ns_maybe_dumpglyphs_background (struct glyph_string *s, char force_p)
               NSRectFill (r);
             }
 
-          s->background_filled_p = 1;
-        }
+	  s->background_filled_p = 1;
+	}
     }
 }
 
@@ -3113,23 +3110,23 @@ ns_dumpglyphs_stretch (struct glyph_string *s)
         {
           if (!s->row->full_width_p)
             {
-              int overrun, leftoverrun;
+	      int overrun, leftoverrun;
 
               /* truncate to avoid overwriting fringe and/or scrollbar */
-              overrun = max (0, (s->x + s->background_width)
-                             - (WINDOW_BOX_RIGHT_EDGE_X (s->w)
-                                - WINDOW_RIGHT_FRINGE_WIDTH (s->w)));
+	      overrun = max (0, (s->x + s->background_width)
+			     - (WINDOW_BOX_RIGHT_EDGE_X (s->w)
+				- WINDOW_RIGHT_FRINGE_WIDTH (s->w)));
               r[i].size.width -= overrun;
 
-              /* truncate to avoid overwriting to left of the window box */
-              leftoverrun = (WINDOW_BOX_LEFT_EDGE_X (s->w)
-                             + WINDOW_LEFT_FRINGE_WIDTH (s->w)) - s->x;
+	      /* truncate to avoid overwriting to left of the window box */
+	      leftoverrun = (WINDOW_BOX_LEFT_EDGE_X (s->w)
+			     + WINDOW_LEFT_FRINGE_WIDTH (s->w)) - s->x;
 
-              if (leftoverrun > 0)
-                {
-                  r[i].origin.x += leftoverrun;
-                  r[i].size.width -= leftoverrun;
-                }
+	      if (leftoverrun > 0)
+		{
+		  r[i].origin.x += leftoverrun;
+		  r[i].size.width -= leftoverrun;
+		}
 
               /* XXX: Try to work between problem where a stretch glyph on
                  a partially-visible bottom row will clear part of the
@@ -3202,9 +3199,9 @@ ns_draw_glyph_string (struct glyph_string *s)
       struct glyph_string *next;
 
       for (width = 0, next = s->next;
-           next && width < s->right_overhang;
-           width += next->width, next = next->next)
-        if (next->first_glyph->type != IMAGE_GLYPH)
+	   next && width < s->right_overhang;
+	   width += next->width, next = next->next)
+	if (next->first_glyph->type != IMAGE_GLYPH)
           {
             if (next->first_glyph->type != STRETCH_GLYPH)
               {
@@ -3223,7 +3220,7 @@ ns_draw_glyph_string (struct glyph_string *s)
 
   if (!s->for_overlaps && s->face->box != FACE_NO_BOX
         && (s->first_glyph->type == CHAR_GLYPH
-            || s->first_glyph->type == COMPOSITE_GLYPH))
+	    || s->first_glyph->type == COMPOSITE_GLYPH))
     {
       n = ns_get_glyph_string_clip_rect (s, r);
       ns_focus (s->f, r, n);
@@ -3253,7 +3250,7 @@ ns_draw_glyph_string (struct glyph_string *s)
       ns_focus (s->f, r, n);
 
       if (s->for_overlaps || (s->cmp_from > 0
-                              && ! s->first_glyph->u.cmp.automatic))
+			      && ! s->first_glyph->u.cmp.automatic))
         s->background_filled_p = 1;
       else
         ns_maybe_dumpglyphs_background
@@ -3294,7 +3291,7 @@ ns_draw_glyph_string (struct glyph_string *s)
       ns_focus (s->f, r, n);
 
       if (s->for_overlaps || (s->cmp_from > 0
-                              && ! s->first_glyph->u.cmp.automatic))
+			      && ! s->first_glyph->u.cmp.automatic))
         s->background_filled_p = 1;
       else
         ns_maybe_dumpglyphs_background
@@ -4086,7 +4083,7 @@ ns_term_init (Lisp_Object display_name)
     }
 
   ns_selection_color = [[NSUserDefaults standardUserDefaults]
-                         stringForKey: @"AppleHighlightColor"];
+			 stringForKey: @"AppleHighlightColor"];
   if (ns_selection_color == nil)
     ns_selection_color = NS_SELECTION_COLOR_DEFAULT;
 
@@ -4191,9 +4188,9 @@ ns_term_init (Lisp_Object display_name)
                                  atIndex: 0];
     [mainMenu setSubmenu: appMenu forItem: item];
     [dockMenu insertItemWithTitle: @"New Frame"
-                           action: @selector (newFrame:)
-                    keyEquivalent: @""
-                          atIndex: 0];
+			   action: @selector (newFrame:)
+		    keyEquivalent: @""
+			  atIndex: 0];
 
     [NSApp setMainMenu: mainMenu];
     [NSApp setAppleMenu: appMenu];
@@ -4403,8 +4400,8 @@ ns_term_shutdown (int sig)
     MenuBar | File | Exit:
     Select Quit from App menubar:
         -terminate
-        KEY_NS_POWER_OFF, (save-buffers-kill-emacs)
-        ns_term_shutdown()
+	KEY_NS_POWER_OFF, (save-buffers-kill-emacs)
+	ns_term_shutdown()
 
     Select Quit from Dock menu:
     Logout attempt:
@@ -4412,9 +4409,9 @@ ns_term_shutdown (int sig)
           Cancel -> Nothing else
           Accept ->
 
-          -terminate
-          KEY_NS_POWER_OFF, (save-buffers-kill-emacs)
-          ns_term_shutdown()
+	  -terminate
+	  KEY_NS_POWER_OFF, (save-buffers-kill-emacs)
+	  ns_term_shutdown()
 
 */
 
@@ -4950,7 +4947,7 @@ ns_term_shutdown (int sig)
         code = '~'; /* 0x7E */
       emacs_event->modifiers = 0;
       emacs_event->kind
-        = code > 0xFF ? MULTIBYTE_CHAR_KEYSTROKE_EVENT : ASCII_KEYSTROKE_EVENT;
+	= code > 0xFF ? MULTIBYTE_CHAR_KEYSTROKE_EVENT : ASCII_KEYSTROKE_EVENT;
       emacs_event->code = code;
       EV_TRAILER ((id)nil);
     }
@@ -5329,7 +5326,7 @@ ns_term_shutdown (int sig)
             strcpy (old_title, t);
           }
         size_title = xmalloc (strlen (old_title) + 40);
-        esprintf (size_title, "%s  —  (%d x %d)", old_title, cols, rows);
+	esprintf (size_title, "%s  —  (%d x %d)", old_title, cols, rows);
         [window setTitle: [NSString stringWithUTF8String: size_title]];
         [window display];
         xfree (size_title);
@@ -5499,7 +5496,6 @@ ns_term_shutdown (int sig)
                                   NSClosableWindowMask)
                         backing: NSBackingStoreBuffered
                           defer: YES];
-
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_7
   [win setCollectionBehavior:NSWindowCollectionBehaviorFullScreenPrimary];
@@ -6051,7 +6047,7 @@ ns_term_shutdown (int sig)
 
   if (nr_screens == 1)
     return [super constrainFrameRect:frameRect toScreen:screen];
-
+  
   if (f->output_data.ns->dont_constrain
       || ns_menu_bar_should_be_hidden ())
     return frameRect;
@@ -6349,13 +6345,13 @@ ns_term_shutdown (int sig)
           return self;
 
         scroll_repeat_entry
-          = [[NSTimer scheduledTimerWithTimeInterval:
-                        SCROLL_BAR_CONTINUOUS_DELAY
+	  = [[NSTimer scheduledTimerWithTimeInterval:
+			SCROLL_BAR_CONTINUOUS_DELAY
                                             target: self
                                           selector: @selector (repeatScroll:)
                                           userInfo: 0
                                            repeats: YES]
-              retain];
+	      retain];
     }
 
   [self sendScrollEventAtLoc: 0 fromEvent: e];
@@ -6401,12 +6397,12 @@ ns_term_shutdown (int sig)
 
       /* set a timer to repeat, as we can't let superclass do this modally */
       scroll_repeat_entry
-        = [[NSTimer scheduledTimerWithTimeInterval: SCROLL_BAR_FIRST_DELAY
+	= [[NSTimer scheduledTimerWithTimeInterval: SCROLL_BAR_FIRST_DELAY
                                             target: self
                                           selector: @selector (repeatScroll:)
                                           userInfo: 0
                                            repeats: YES]
-            retain];
+	    retain];
     }
   else
     {
@@ -6552,7 +6548,7 @@ x_new_font (struct frame *f, Lisp_Object font_object, int fontset)
     {
       int wid = FRAME_COLUMN_WIDTH (f);
       FRAME_CONFIG_SCROLL_BAR_COLS (f)
-        = (FRAME_CONFIG_SCROLL_BAR_WIDTH (f) + wid - 1) / wid;
+	= (FRAME_CONFIG_SCROLL_BAR_WIDTH (f) + wid - 1) / wid;
     }
   else
     {
@@ -6562,7 +6558,7 @@ x_new_font (struct frame *f, Lisp_Object font_object, int fontset)
 
   /* Now make the frame display the given font.  */
   if (FRAME_NS_WINDOW (f) != 0)
-        x_set_window_size (f, 0, FRAME_COLS (f), FRAME_LINES (f));
+	x_set_window_size (f, 0, FRAME_COLS (f), FRAME_LINES (f));
 
   return font_object;
 }
@@ -6746,7 +6742,7 @@ Only works on OSX 10.6 or later.  */);
 
   /* TODO: move to common code */
   DEFVAR_LISP ("x-toolkit-scroll-bars", Vx_toolkit_scroll_bars,
-               doc: /* Which toolkit scroll bars Emacs uses, if any.
+	       doc: /* Which toolkit scroll bars Emacs uses, if any.
 A value of nil means Emacs doesn't use toolkit scroll bars.
 With the X Window system, the value is a symbol describing the
 X toolkit.  Possible values are: gtk, motif, xaw, or xaw3d.
@@ -6754,7 +6750,7 @@ With MS Windows or Nextstep, the value is t.  */);
   Vx_toolkit_scroll_bars = Qt;
 
   DEFVAR_BOOL ("x-use-underline-position-properties",
-               x_use_underline_position_properties,
+	       x_use_underline_position_properties,
      doc: /*Non-nil means make use of UNDERLINE_POSITION font properties.
 A value of nil means ignore them.  If you encounter fonts with bogus
 UNDERLINE_POSITION font properties, for example 7x13 on XFree prior
@@ -6762,7 +6758,7 @@ to 4.1, set this to nil. */);
   x_use_underline_position_properties = 0;
 
   DEFVAR_BOOL ("x-underline-at-descent-line",
-               x_underline_at_descent_line,
+	       x_underline_at_descent_line,
      doc: /* Non-nil means to draw the underline at the same place as the descent line.
 A value of nil means to draw the underline according to the value of the
 variable `x-use-underline-position-properties', which is usually at the
