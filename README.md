@@ -18,20 +18,26 @@ Both binaries compiled with this configurations:
 > ./configure --without-dbus --with-ns --disable-ns-self-contained
 
 Screenshots:
-Emacs 24 on Mac OS X Mountain Lion:
+*Emacs 24 on Mac OS X Mountain Lion:*
+
 ![](https://github.com/xajler/emacs24-macosx-lion-fullscreen/raw/master/screenshots/emacs24-MountainLion.png)
 
-Emacs 24 in Mac OS X Mountain Lion Mission Control Full Screen:
+*Emacs 24 in Mac OS X Mountain Lion Mission Control Full Screen:*
+
 ![](https://github.com/xajler/emacs24-macosx-lion-fullscreen/raw/master/screenshots/emacs24-MountainLion-MissionControl-Fullscreen.png)
 
-Emacs 24 in Mac OS X Mountain Lion Mission Control as item:
+*Emacs 24 in Mac OS X Mountain Lion Mission Control as item:*
+
 ![](https://github.com/xajler/emacs24-macosx-lion-fullscreen/raw/master/screenshots/emacs24-MissionControl-item.png)
 
-Emacs 24 M-x ns-toggle-fullscreen:
+*Emacs 24 M-x ns-toggle-fullscreen:*
+
 ![](https://github.com/xajler/emacs24-macosx-lion-fullscreen/raw/master/screenshots/emacs24-mx-ns-toggle-fullscreen.png)
 
-Emacs 24 ns-toggle-fullscreen in action:
+*Emacs 24 ns-toggle-fullscreen in action:*
+
 ![](https://github.com/xajler/emacs24-macosx-lion-fullscreen/raw/master/screenshots/emacs24-ns-toggle-fullscreen.png)
 
-Emacs 24 ns-toggle-fullscreen in Mission Control as Desktop item:
+*Emacs 24 ns-toggle-fullscreen in Mission Control as Desktop item:*
+
 ![](https://github.com/xajler/emacs24-macosx-lion-fullscreen/raw/master/screenshots/emacs24-ns-toggle-fullscrein-NoItemInMissionControl.png)
