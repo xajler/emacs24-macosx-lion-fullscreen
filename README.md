@@ -1,6 +1,6 @@
 ## Emacs 24.1.50 (9.0) for Mac OS X Lion and Mountain Lion
 * Implemented ns-toggle-fullscreen patch. (Better for those with  multiple monitors, no empty gray area on non-main monitors).
-* Implemented my Mission Control fullscreen patch. (Better for those with one monitor to swipe out through full screen apps).
+* Implemented my Mission Control fullscreen patch. (Better for those with one monitor to swipe away through full screen apps).
 
 ## For Mac OS X Lion
 * [Download it](https://github.com/downloads/xajler/emacs24-macosx-lion-fullscreen/emacs24.1.5-fullscreen-Lion.tar.bz2).
@@ -9,15 +9,19 @@
 ## For Mac OS X Mountain Lion
 * [Download it](https://github.com/downloads/xajler/emacs24-macosx-lion-fullscreen/emacs24.1.5-fullscreen-ML.tar.bz2).
 * Untar it and copy/move to Applications folder.
-* It (Gatekeeper) will complain that is from unidentified developer
+* Gatekeeper will complain that is from unidentified developer, do:
   * Go to "System Preferences" -> "Security & Privacy" -> General.
   * "Click lock to make changes" fill the password.
   * Click "Anywhere" in "Allow applications downloaded from:"
 
 Both binaries compiled with this configurations:
-> ./configure --without-dbus --with-ns --disable-ns-self-contained
 
-Screenshots:
+>
+> ./configure --without-dbus --with-ns --disable-ns-self-contained
+>
+
+## Screenshots
+
 **Emacs 24 on Mac OS X Mountain Lion:**
 
 ![](https://github.com/xajler/emacs24-macosx-lion-fullscreen/raw/master/screenshots/emacs24-MountainLion.png)
